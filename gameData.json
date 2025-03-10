@@ -1,0 +1,71 @@
+{
+  "battleRoyale": [
+    [
+      "635177446295207937",
+      {
+        "pokemon": {
+          "name": "Bulbasaur",
+          "hp": 45,
+          "attack": 49,
+          "defense": 49,
+          "type": [
+            "Grass",
+            "Poison"
+          ],
+          "moves": [
+            "Tackle",
+            "Vine Whip",
+            "Razor Leaf",
+            "Poison Powder"
+          ],
+          "evolvesTo": "Ivysaur",
+          "evolveLevel": 16,
+          "currentHp": 45,
+          "status": "none",
+          "statusTurns": 0,
+          "isShiny": false,
+          "level": 5,
+          "exp": 0
+        },
+        "isBot": false,
+        "ownerId": "635177446295207937",
+        "lastAction": 1741579655895
+      }
+    ]
+  ],
+  "userData": [
+    [
+      "635177446295207937",
+      {
+        "pokemon": {
+          "name": "Bulbasaur",
+          "hp": 45,
+          "attack": 49,
+          "defense": 49,
+          "type": [
+            "Grass",
+            "Poison"
+          ],
+          "moves": [
+            "Tackle",
+            "Vine Whip",
+            "Razor Leaf",
+            "Poison Powder"
+          ],
+          "evolvesTo": "Ivysaur",
+          "evolveLevel": 16,
+          "currentHp": 45,
+          "status": "none",
+          "statusTurns": 0,
+          "isShiny": false,
+          "level": 5,
+          "exp": 0
+        }
+      }
+    ]
+  ],
+  "gameState": {
+    "lastSpawnTime": 1741579637137,
+    "wildPokemon": null
+  }
+}
