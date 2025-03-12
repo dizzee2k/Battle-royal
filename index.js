@@ -321,54 +321,6 @@ function attemptCatch(userId, ballType, fromBattle = false) {
         return false;
     }
 
-    const user = userData.get(userId);
-    if (!user) {
-        console.log(`User ${userId} not found in userData`);
-        return false;
-    }
-
-    const ballCount = user.inventory[ballType.toLowerCase()] || 0;
-    if (ballCount <= 0) {
-        console.log(`User ${userId} has no ${ballType} in inventory. Current count: ${ballCount}`);
-        return false;
-    }
-
-    const hpRatio = wildPokemon.currentHp / wildPokemon.hp;
-    const caughtPokemonName = wildPokemon.name;
-    const catchRate = shopItems[ballType.toLowerCase()].catchRate * (2 - hpRatio) + 0.1;
-    const catchChance = Math.min(1, catchRate * (wildPokemon.shiny ? 0.5 : 1));
-
-    console.log(`Catch attempt by ${userId}: Ball=${ballType}, HP Ratio=${hpRatio.toFixed(2)}, Catch Rate=${catchRate.toFixed(2)}, Catch Chance=${catchChance.toFixed(2)}`);
-
-    if (Math.random() < catchChance) {
-        user.inventory[ballType.toLowerCase()]--;
-        if (user.party.length < MAX_PARTY_SIZE) {
-            user.party.push({ ...wildPokemon });
-        } else {
-            user.pc.push({ ...wildPokemon });
-        }
-        user.party.forEach(pokemon => {
-            pokemon.xp += CATCH_XP_REWARD;
-            levelUpPokemon(pokemon);
-        });
-        user.coins += CATCH_COIN_REWARD;
-        wildPokemon = null;
-        if (wildBattle && fromBattle) {
-            wildBattle = null;
-        }
-        userData.set(userId, user);
-        saveGameState();
-        console.log(`User ${userId} successfully caught ${caughtPokemonName}`);
-        return { success: true, pokemonName: caughtPokemonName };
-    } else {
-        user.inventory[ballType.toLowerCase()]--;
-        userData.set(userId, user);
-        saveGameState();
-        console.log(`User ${userId} failed to catch ${wildPokemon ? wildPokemon.name : 'unknown Pokémon'} with ${ballType}`);
-        return { success: false, pokemonName: wildPokemon ? wildPokemon.name : 'unknown Pokémon' };
-    }
-}
-
 function useItem(userId, item, targetPokemon) {
     const user = userData.get(userId);
     if (!user || !user.inventory[item.toLowerCase()] || user.inventory[item.toLowerCase()] <= 0) return false;
@@ -702,12 +654,15 @@ async function announceBattleUpdate(channel) {
             .setTimestamp();
 
         const actionButtons = [];
-        if (!userData.get(channel.guild.members.cache.get(client.user.id)?.id)?.hasStarted && !battle.active && !wildBattle) {
+        // Check if the bot user exists and fetch its data safely
+        const botUserId = client.user && client.user.id;
+        const botUserData = botUserId && channel.guild && channel.guild.members.cache.get(botUserId) && userData.get(botUserId);
+        if (!botUserData || !botUserData.hasStarted && !battle.active && !wildBattle) {
             actionButtons.push(new ButtonBuilder()
                 .setCustomId('start_adventure')
                 .setLabel('Start Your Adventure')
                 .setStyle(ButtonStyle.Success));
-        } else if (!battle.active && !wildBattle && userData.has(channel.guild.members.cache.get(client.user.id)?.id)) {
+        } else if (!battle.active && !wildBattle && userData.has(botUserId)) {
             actionButtons.push(new ButtonBuilder()
                 .setCustomId('join_battle')
                 .setLabel('Join Battle')
